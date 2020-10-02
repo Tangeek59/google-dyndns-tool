@@ -19,9 +19,11 @@ func main() {
 	URL := "https://domains.google.com/nic/update?hostname="+hostname+"&"+string(ip)
 	
 	fmt.Println(URL)
-    //pass the values to the request's body
-    req, _ := http.NewRequest("POST", URL, nil)
-    req.SetBasicAuth(user, password)
+    	
+	//pass the values to the request's body
+    	req, _ := http.NewRequest("POST", URL, nil)
+    	req.SetBasicAuth(user, password)
+	
 	resp, err:=client.Do(req)
 	
 	fmt.Println(resp)
