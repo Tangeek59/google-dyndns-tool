@@ -24,8 +24,8 @@ jobs:
       run: docker push tangeek/google-dyndns-tool:$GITHUB_SHA
     - name: Tag image to latest
       run: docker tag tangeek/google-dyndns-tool:$GITHUB_SHA tangeek/google-dyndns-tool:latest
-      if: github.ref == 'master'
+      if: github.event == 'push'
     - name: Push latest image
       run: docker push tangeek/google-dyndns-tool:latest
-      if: github.ref == 'master'
+      if: github.event == 'push'
       
