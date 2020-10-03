@@ -1,0 +1,31 @@
+name: Build and push image to docker hub
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag tangeek/google-dyndns-tool:$GITHUB_SHA
+    - name: Login to docker hub
+      run: docker login --username tangeek --password $DOCKER_HUP_API_TOKEN
+      env:
+        DOCKER_HUP_API_TOKEN: ${{ secrets.DOCKER_HUP_API_TOKEN }}
+    - name: Push to docker hub
+      run: docker push tangeek/google-dyndns-tool:$GITHUB_SHA
+    - name: Tag image to latest
+      run: docker tag tangeek/google-dyndns-tool:$GITHUB_SHA tangeek/google-dyndns-tool:latest
+      if: github.ref == 'master'
+    - name: Push latest image
+      run: docker push tangeek/google-dyndns-tool:latest
+      if: github.ref == 'master'
+      
