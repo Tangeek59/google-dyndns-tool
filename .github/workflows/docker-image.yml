@@ -15,8 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag tangeek/google-dyndns-tool:$(date +%s)
     - name: Login to docker hub
       run: docker login --username tangeek --password $DOCKER_HUP_API_TOKEN
       env: # Or as an environment variable
         DOCKER_HUP_API_TOKEN: ${{ secrets.DOCKER_HUP_API_TOKEN }}
+    - name: Push to docker hub
+      run: docker push tangeek/google-dyndns-tool:$(date +%s)
