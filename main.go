@@ -7,17 +7,24 @@ import (
 	"os"
 )
 
+const GetIpUrl = "https://api.ipify.org"
+
 func main() {
 
 	user := os.Getenv("DNS_USERNAME")
 	password := os.Getenv("DNS_PASSWORD")
 	hostname := os.Getenv("HOSTNAME")
 
-	res, _ := http.Get("https://api.ipify.org")
+	res, err := http.Get(GetIpUrl)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 	ip, _ := ioutil.ReadAll(res.Body)
 
 	client := &http.Client{}
-	URL := "https://domains.google.com/nic/update?hostname=" + hostname + "&" + string(ip)
+	URL := buildGoogleUpdateUrl(hostname, string(ip))
 
 	fmt.Println(URL)
 
@@ -26,8 +33,14 @@ func main() {
 	req.SetBasicAuth(user, password)
 
 	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	fmt.Println(resp)
-	fmt.Println(err)
+}
 
+func buildGoogleUpdateUrl(hostname, ip string) string {
+	return fmt.Sprintf("https://domains.google.com/nic/update?hostname=%s&%s", hostname, ip)
 }
